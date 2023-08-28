@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>计时器</title>
+  <style>
+    .remaining {
+      color: black;
+    }
+
+    .expired {
+      color: red;
+    }
+  </style>
+  <script>
+    function calculateTimeRemaining(arrivalDate, isCountdown) {
+      var currentDateTime = new Date();
+      var arrivalDateTime = new Date(arrivalDate);
+      var remainingTime = arrivalDateTime - currentDateTime;
+      if (isCountdown) {
+        var remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+        var remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        var remainingSeconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+        return [remainingDays, remainingHours, remainingMinutes, remainingSeconds];
+      } else {
+        var elapsedDays = Math.floor(Math.abs(remainingTime) / (1000 * 60 * 60 * 24));
+        var elapsedHours = Math.floor((Math.abs(remainingTime) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var elapsedMinutes = Math.floor((Math.abs(remainingTime) % (1000 * 60 * 60)) / (1000 * 60));
+        var elapsedSeconds = Math.floor((Math.abs(remainingTime) % (1000 * 60)) / 1000);
+        return [elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds];
+      }
+    }
+
+    function updateCountdown() {
+      var arrivalDates = {
+        "日本": "2023-08-24T12:00:00",
+        "江苏": "2024-05-01T12:00:00",
+        "上海": "2024-04-25T12:00:00",
+        "浙江": "2024-04-20T12:00:00",
+        "台湾": "2024-05-10T12:00:00",
+        "福建": "2024-05-14T12:00:00",
+        "山东": "2024-05-25T12:00:00",
+        "河北": "2024-07-11T12:00:00",
+        "天津": "2024-07-17T12:00:00",
+        "香港": "2024-08-11T12:00:00",
+        "澳门": "2024-08-18T12:00:00",
+        "广西": "2024-10-17T12:00:00",
+        "广东省": "2024-07-06T12:00:00",
+        "海南岛": "2024-09-19T12:00:00"
+      };
+
+      var orderedRegions = ["日本", "江苏", "上海", "浙江", "台湾", "福建", "山东", "河北", "天津", "香港", "澳门", "广西", "广东省", "海南岛"];
+
+      var currentDateTime = new Date();
+      var currentDateTimeString = currentDateTime.toLocaleString();
+      document.getElementById("currentDateTime").textContent = "当前时间：" + currentDateTimeString;
+
+      orderedRegions.forEach(function(region) {
+        var arrivalDate = arrivalDates[region];
+        var isCountdown = (region !== "日本"); // 判断是否是倒计时
+        var remainingElement = document.getElementById("remaining" + region);
+
+        var timeRemaining = calculateTimeRemaining(arrivalDate, isCountdown);
+        var remainingDays = timeRemaining[0];
+        var remainingHours = timeRemaining[1];
+        var remainingMinutes = timeRemaining[2];
+        var remainingSeconds = timeRemaining[3];
+
+        if (isCountdown) {
+          if (remainingDays <= 0 && remainingHours <= 0 && remainingMinutes <= 0 && remainingSeconds <= 0) {
+            remainingElement.innerHTML = "距离核污水到达 " + region + " 的倒计时：<span class='expired'>已经到达！</span>";
+          } else {
+            var remainingString = "距离核污水到达 " + region + " 的倒计时：" + remainingDays + "天 " + remainingHours + "小时 " + remainingMinutes + "分钟 " + remainingSeconds + "秒";
+            remainingElement.innerHTML = "<span class='remaining'>" + remainingString + "</span>";
+          }
+        } else {
+          var elapsedString = "日本已经排放核污水：" + remainingDays + "天 " + remainingHours + "小时 " + remainingMinutes + "分钟 " + remainingSeconds + "秒";
+          document.getElementById("elapsed" + region).textContent = elapsedString;
+        }
+      });
+    }
+
+    setInterval(updateCountdown, 1000);
+  </script>
+</head>
+<body>
+  <h1>计时器</h1>
+  <p id="currentDateTime"></p>
+  <p id="elapsed日本"></p>
+  <p id="remaining江苏"></p>
+  <p id="remaining上海"></p>
+  <p id="remaining浙江"></p>
+  <p id="remaining台湾"></p>
+  <p id="remaining福建"></p>
+  <p id="remaining山东"></p>
+  <p id="remaining河北"></p>
+  <p id="remaining天津"></p>
+  <p id="remaining香港"></p>
+  <p id="remaining澳门"></p>
+  <p id="remaining广西"></p>
+  <p id="remaining广东省"></p>
+  <p id="remaining海南岛"></p>
+</body>
+</html>
